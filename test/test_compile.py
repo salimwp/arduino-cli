@@ -280,7 +280,7 @@ def test_compile_with_multiple_build_properties(run_command, data_dir, copy_sket
     # Tries compilation using multiple build properties separated by a comma
     res = run_command(
         f"compile -b {fqbn} "
-        + '--build-properties="compiler.cpp.extra_flags=\'-DPIN=2,-DSSID=\\"This is a String\\"\\"\' '
+        + '--build-properties="compiler.cpp.extra_flags=\\"-DPIN=2,-DSSID=\\"This is a String\\"\\"\\" '
         + f"{sketch_path} --verbose"
     )
     assert res.failed
