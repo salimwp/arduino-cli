@@ -319,7 +319,7 @@ def test_compile_with_multiple_build_property_flags(run_command, data_dir, copy_
     # Compile using multiple build properties separated by a space
     res = run_command(
         f"compile -b {fqbn} "
-        + '--build-property=\'compiler.cpp.extra_flags=\\"-DPIN=2 -DSSID=\\"This is a String\\"\\"\' '
+        + '--build-property="compiler.cpp.extra_flags=\\"-DPIN=2 -DSSID=\\"This is a String\\"\\"" '
         + f"{sketch_path} --verbose --clean"
     )
     assert res.failed
@@ -327,7 +327,7 @@ def test_compile_with_multiple_build_property_flags(run_command, data_dir, copy_
     # Compile using multiple build properties separated by a space and properly quoted
     res = run_command(
         f"compile -b {fqbn} "
-        + '--build-property=\'compiler.cpp.extra_flags=-DPIN=2 "-DSSID="This is a String""\' '
+        + '--build-property="compiler.cpp.extra_flags=-DPIN=2 \\"-DSSID=\\"This is a String\\"\\"" '
         + f"{sketch_path} --verbose --clean"
     )
     assert res.ok
