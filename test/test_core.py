@@ -49,39 +49,41 @@ def test_core_search(run_command, httpserver):
     result = run_command(f"core search retrokit --all --additional-urls={url}")
     assert result.ok
     lines = [l.strip().split() for l in result.stdout.strip().splitlines()]
-    assert 11 == len(lines)
     assert ["Updating", "index:", "package_index.json", "downloaded"] in lines
     assert ["Updating", "index:", "package_index.json.sig", "downloaded"] in lines
     assert ["Retrokits-RK002:arm", "1.0.5", "RK002"] in lines
     assert ["Retrokits-RK002:arm", "1.0.6", "RK002"] in lines
+    header_index = lines.index(["ID", "Version", "Name"])
+    assert 2 == len(lines[header_index + 1 :])  # noqa: E203
 
     # Search using Retrokit Package Maintainer
     result = run_command(f"core search Retrokits-RK002 --all --additional-urls={url}")
     assert result.ok
     lines = [l.strip().split() for l in result.stdout.strip().splitlines()]
-    assert 11 == len(lines)
     assert ["Updating", "index:", "package_index.json", "downloaded"] in lines
     assert ["Updating", "index:", "package_index.json.sig", "downloaded"] in lines
     assert ["Retrokits-RK002:arm", "1.0.5", "RK002"] in lines
     assert ["Retrokits-RK002:arm", "1.0.6", "RK002"] in lines
+    assert 2 == len(lines[header_index + 1 :])  # noqa: E203
 
     # Search using the Retrokit Platform name
     result = run_command(f"core search rk002 --all --additional-urls={url}")
     assert result.ok
-    assert 11 == len(lines)
+    lines = [l.strip().split() for l in result.stdout.strip().splitlines()]
     assert ["Updating", "index:", "package_index.json", "downloaded"] in lines
     assert ["Updating", "index:", "package_index.json.sig", "downloaded"] in lines
     assert ["Retrokits-RK002:arm", "1.0.5", "RK002"] in lines
     assert ["Retrokits-RK002:arm", "1.0.6", "RK002"] in lines
+    assert 2 == len(lines[header_index + 1 :])  # noqa: E203
 
     # Search using a board name
     result = run_command(f"core search myboard --all --additional-urls={url}")
     assert result.ok
-    assert 10 == len(result.stdout.strip().splitlines())
     lines = [l.strip().split() for l in result.stdout.strip().splitlines()]
     assert ["Updating", "index:", "package_index.json", "downloaded"] in lines
     assert ["Updating", "index:", "package_index.json.sig", "downloaded"] in lines
     assert ["Package:x86", "1.2.3", "Platform"] in lines
+    assert 1 == len(lines[header_index + 1 :])  # noqa: E203
 
 
 def test_core_search_no_args(run_command, httpserver):
@@ -104,11 +106,11 @@ def test_core_search_no_args(run_command, httpserver):
     num_platforms = 0
     lines = [l.strip().split() for l in result.stdout.strip().splitlines()]
     # Index update output and the header are printed on the first lines
-    assert ["Updating", "index:", "package_index.json", "downloaded"] in lines[:6]
-    assert ["Updating", "index:", "package_index.json.sig", "downloaded"] in lines[:6]
-    assert ["ID", "Version", "Name"] == lines[5]
-    assert ["test:x86", "2.0.0", "test_core"] in lines[6:]
-    num_platforms = len(lines[6:])
+    assert ["Updating", "index:", "package_index.json", "downloaded"] in lines
+    assert ["Updating", "index:", "package_index.json.sig", "downloaded"] in lines
+    assert ["test:x86", "2.0.0", "test_core"] in lines
+    header_index = lines.index(["ID", "Version", "Name"])
+    num_platforms = len(lines[header_index + 1 :])  # noqa: E203
 
     # same thing in JSON format, also check the number of platforms found is the same
     result = run_command("core search --format json")
@@ -123,11 +125,11 @@ def test_core_search_no_args(run_command, httpserver):
     num_platforms = 0
     lines = [l.strip().split() for l in result.stdout.strip().splitlines()]
     # Index update output and the header are printed on the first lines
-    assert ["Updating", "index:", "package_index.json", "downloaded"] in lines[:9]
-    assert ["Updating", "index:", "package_index.json.sig", "downloaded"] in lines[:9]
-    assert ["ID", "Version", "Name"] == lines[8]
-    assert ["test:x86", "2.0.0", "test_core"] in lines[9:]
-    num_platforms = len(lines[9:])
+    assert ["Updating", "index:", "package_index.json", "downloaded"] in lines
+    assert ["Updating", "index:", "package_index.json.sig", "downloaded"] in lines
+    assert ["test:x86", "2.0.0", "test_core"] in lines
+    header_index = lines.index(["ID", "Version", "Name"])
+    num_platforms = len(lines[header_index + 1 :])  # noqa: E203
 
     # same thing in JSON format, also check the number of platforms found is the same
     result = run_command(f"core search --format json --additional-urls={url}")
