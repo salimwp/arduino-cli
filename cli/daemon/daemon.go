@@ -96,8 +96,8 @@ func runDaemonCommand(cmd *cobra.Command, args []string) {
 		}()
 	}
 
-	logrus.Infof("Starting daemon on TCP address 127.0.0.1:%s", port)
-	lis, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%s", port))
+	logrus.Infof("Starting daemon on TCP address 0.0.0.0:%s", port)
+	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%s", port))
 	if err != nil {
 		// Invalid port, such as "Foo"
 		var dnsError *net.DNSError
